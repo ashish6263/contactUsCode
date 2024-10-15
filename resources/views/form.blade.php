@@ -97,12 +97,13 @@
             </div>
             
             <div class="mb-3">
-                <label for="captcha" class="form-label captcha-question">
+                <label id="captcha-question" for="captcha" class="form-label captcha-question">
                     {{ $captcha_question }} <span style="color: red;">*</span>
                 </label>
                 <input type="text" class="form-control captcha-input" id="captcha" name="captcha" required>
                 <div class="invalid-feedback" id="error-captcha"></div>
             </div>
+            
             <button type="submit" class="btn btn-primary w-100">Submit</button>
         </form>
     </div>
