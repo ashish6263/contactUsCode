@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Form</title>
+    <title>Login Page</title>
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <!-- Include Bootstrap CSS for styling -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google reCAPTCHA -->
-    {{-- {!! NoCaptcha::renderJs() !!} --}}
+    
     <style>
         /* Full-page gradient background */
         body {
@@ -48,6 +47,15 @@
         #success-message, #error-message {
             border-radius: 5px;
             padding: 15px;
+        }
+         /* Captcha styling */
+         .captcha-question {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .captcha-input {
+            border: 2px solid #007bff; /* Different border color */
+            border-radius: 5px; /* Rounded corners */
         }
     </style>
 </head>
@@ -87,13 +95,13 @@
                 <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
                 <div class="invalid-feedback" id="error-notes"></div>
             </div>
-            {{-- <div class="mb-3">
-                {!! NoCaptcha::display() !!}
-                <div class="invalid-feedback d-block" id="error-g-recaptcha-response"></div>
-            </div> --}}
+            
             <div class="mb-3">
-                <div class="g-recaptcha" data-sitekey="6Lf1CmIqAAAAAFKtOB52BBa1pkHyaZpalEXLR7TC"></div>
-                <div class="invalid-feedback d-block" id="error-g-recaptcha-response"></div>
+                <label for="captcha" class="form-label captcha-question">
+                    {{ $captcha_question }} <span style="color: red;">*</span>
+                </label>
+                <input type="text" class="form-control captcha-input" id="captcha" name="captcha" required>
+                <div class="invalid-feedback" id="error-captcha"></div>
             </div>
             <button type="submit" class="btn btn-primary w-100">Submit</button>
         </form>
@@ -124,7 +132,9 @@
                         if (response.status === 'success') {
                             $('#success-message').text(response.message).removeClass('d-none');
                             $('#contact-form')[0].reset();
-                            grecaptcha.reset();
+                            if (response.new_captcha_question) {
+                                $('#captcha-question').html(response.new_captcha_question + ' <span style="color: red;">*</span>');
+                            }
                         }
                     },
                     error: function(xhr) {
@@ -134,10 +144,12 @@
                                 $('#error-' + key).text(value[0]);
                                 $('#' + key).addClass('is-invalid');
                             });
+                            if (xhr.responseJSON.new_captcha_question) {
+                                $('#captcha-question').html(xhr.responseJSON.new_captcha_question + ' <span style="color: red;">*</span>');
+                            }
                         } else {
                             $('#error-message').text('An unexpected error occurred. Please try again.').removeClass('d-none');
                         }
-                        grecaptcha.reset();
                     }
                 });
             });
