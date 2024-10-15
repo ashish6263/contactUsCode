@@ -52,7 +52,7 @@
 </head>
 <body>
     <div class="contact-card">
-        <h2>Contact Us</h2>
+        <h2>Please Log In</h2>
         <div id="success-message" class="alert alert-success d-none"></div>
         <div id="error-message" class="alert alert-danger d-none"></div>
         <form id="contact-form">
