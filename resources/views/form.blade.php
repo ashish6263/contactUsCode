@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <!-- Include Bootstrap CSS for styling -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google reCAPTCHA -->
@@ -58,20 +59,29 @@
         <form id="contact-form">
             @csrf
             <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
+                <label for="name" class="form-label">
+                    Name <span style="color: red;">*</span>
+                </label>
                 <input type="text" class="form-control" id="name" name="name" required>
                 <div class="invalid-feedback" id="error-name"></div>
             </div>
+            
             <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
+                <label for="email" class="form-label">
+                    Email <span style="color: red;">*</span>
+                </label>
                 <input type="email" class="form-control" id="email" name="email" required>
                 <div class="invalid-feedback" id="error-email"></div>
             </div>
+            
             <div class="mb-3">
-                <label for="phone" class="form-label">Phone</label>
-                <input type="text" class="form-control" id="phone" name="phone" required>
+                <label for="phone" class="form-label">
+                    Phone <span style="color: red;">*</span>
+                </label>
+                <input type="text" class="form-control" id="phone" name="phone" maxlength="10" required>
                 <div class="invalid-feedback" id="error-phone"></div>
             </div>
+            
             <div class="mb-3">
                 <label for="notes" class="form-label">Notes</label>
                 <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
@@ -81,6 +91,10 @@
                 {!! NoCaptcha::display() !!}
                 <div class="invalid-feedback d-block" id="error-g-recaptcha-response"></div>
             </div> --}}
+            <div class="mb-3">
+                <div class="g-recaptcha" data-sitekey="6Lf1CmIqAAAAAFKtOB52BBa1pkHyaZpalEXLR7TC"></div>
+                <div class="invalid-feedback d-block" id="error-g-recaptcha-response"></div>
+            </div>
             <button type="submit" class="btn btn-primary w-100">Submit</button>
         </form>
     </div>
@@ -110,8 +124,7 @@
                         if (response.status === 'success') {
                             $('#success-message').text(response.message).removeClass('d-none');
                             $('#contact-form')[0].reset();
-                            // If using reCAPTCHA, uncomment the next line
-                            // grecaptcha.reset();
+                            grecaptcha.reset();
                         }
                     },
                     error: function(xhr) {
@@ -124,8 +137,7 @@
                         } else {
                             $('#error-message').text('An unexpected error occurred. Please try again.').removeClass('d-none');
                         }
-                        // If using reCAPTCHA, uncomment the next line
-                        // grecaptcha.reset();
+                        grecaptcha.reset();
                     }
                 });
             });
